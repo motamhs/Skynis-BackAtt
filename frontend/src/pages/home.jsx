@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Play } from "lucide-react";
 import "./css/home.css";
 
 export default function Home() {
@@ -30,6 +31,8 @@ export default function Home() {
     }, []);
 
     const handleVerDetalhes = (idFilme) => {
+        if (!idFilme) return;
+
         const token = localStorage.getItem("access_token");
         if (!token) {
             navigate("/login");
@@ -78,7 +81,7 @@ export default function Home() {
 
     
         return categoriasValidas.slice(0, 2).map((c) => (
-            <span key={c.id} className="tag">{c.nome}</span>
+            <span key={c.id || c.id_categoria || c.nome} className="tag">{c.nome}</span>
         ));
     };
 
@@ -104,11 +107,9 @@ export default function Home() {
                         <div className="hero-botoes">
                             <button
                                 className="btn-ver-detalhes-hero"
-                                onClick={() => handleVerDetalhes(filmeHero.id)}
+                                onClick={() => handleVerDetalhes(filmeHero.id || filmeHero.id_filme)}
                             >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg>
+                                <Play size={18} fill="currentColor" />
                                 Ver detalhes
                             </button>
                             <button className="btn-explorar" onClick={() => navigate("/filmes")}>
@@ -124,7 +125,7 @@ export default function Home() {
                     <h2>Em Destaque</h2>
                     <div className="grid-filmes">
                         {outrosFilmes.map((filme) => (
-                            <div key={`destaque-${filme.id}`} className="card-filme">
+                            <div key={`destaque-${filme.id || filme.id_filme}`} className="card-filme">
                                 {/* Atualizado para usar filme.poster acompanhando o novo schemas.py */}
                                 <img src={filme.poster || filme.imagem} alt={filme.titulo} className="poster-filme" />
                                 <div className="card-info">
@@ -136,7 +137,7 @@ export default function Home() {
                                     </div>
                                     <button
                                         className="btn-ver-detalhes-card"
-                                        onClick={() => handleVerDetalhes(filme.id)}
+                                        onClick={() => handleVerDetalhes(filme.id || filme.id_filme)}
                                     >
                                         Ver detalhes
                                     </button>

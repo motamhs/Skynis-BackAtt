@@ -7,6 +7,7 @@ import Perfil from "./pages/perfil";
 import Filmes from "./pages/filmes"; 
 import Detalhes from "./pages/detalheFilme"; 
 import Admin from "./pages/pageadm"; 
+import AdicionarFilme from "./pages/adicionarFilme";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="perfil" element={<Perfil />} /> 
            <Route path="filme/:id" element={<Detalhes />} />
            <Route path="admin" element={<Admin />} />
+           <Route path="adicionar" element={<AdicionarFilme />} />
         </Route>
       </Routes>
     </BrowserRouter>

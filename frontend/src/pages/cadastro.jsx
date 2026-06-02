@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Mail, ShieldPlus, User } from "lucide-react";
 import LogoSkynis from "../assets/logo Skynis.svg?react";
 import "./css/cadastro.css";
 
@@ -8,6 +9,7 @@ export default function Cadastro() {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
+    const [role, setRole] = useState("user");
 
     const [mostrarSenha, setMostrarSenha] = useState(false);
     const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
@@ -26,7 +28,7 @@ export default function Cadastro() {
             const resposta = await fetch("http://localhost:8000/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nome, email, senha }),
+                body: JSON.stringify({ nome, email, senha, role }),
             });
 
             const dados = await resposta.json();
@@ -46,7 +48,7 @@ export default function Cadastro() {
     return (
         <div className="pagina-cadastro">
             <header className="header-cadastro">
-                <Link to="/">
+                <Link to="/" className="logo-link">
                     <LogoSkynis className="logo-svg" />
                 </Link>
             </header>
@@ -66,10 +68,7 @@ export default function Cadastro() {
                                 required
                             />
 
-                            <svg className="icone-input" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-                                <circle cx="12" cy="7" r="4" />
-                            </svg>
+                            <User className="icone-input" />
                         </div>
 
                         <div className="grupo-input">
@@ -81,10 +80,7 @@ export default function Cadastro() {
                                 required
                             />
 
-                            <svg className="icone-input" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <rect x="2" y="4" width="20" height="16" rx="2" />
-                                <path d="M22 6l-10 7L2 6" />
-                            </svg>
+                            <Mail className="icone-input" />
                         </div>
 
 
@@ -97,17 +93,17 @@ export default function Cadastro() {
                                 required
                             />
 
-                            <svg
-                                className="icone-input clicavel"
-                                onClick={() => setMostrarSenha(!mostrarSenha)}
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                            >
-                                {mostrarSenha ? (
-                                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22" />
-                                ) : (
-                                    <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></>
-                                )}
-                            </svg>
+                            {mostrarSenha ? (
+                                <EyeOff
+                                    className="icone-input clicavel"
+                                    onClick={() => setMostrarSenha(!mostrarSenha)}
+                                />
+                            ) : (
+                                <Eye
+                                    className="icone-input clicavel"
+                                    onClick={() => setMostrarSenha(!mostrarSenha)}
+                                />
+                            )}
                         </div>
 
 
@@ -121,17 +117,31 @@ export default function Cadastro() {
                             />
 
 
-                            <svg
-                                className="icone-input clicavel"
-                                onClick={() => setMostrarConfirmar(!mostrarConfirmar)}
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                            {mostrarConfirmar ? (
+                                <EyeOff
+                                    className="icone-input clicavel"
+                                    onClick={() => setMostrarConfirmar(!mostrarConfirmar)}
+                                />
+                            ) : (
+                                <Eye
+                                    className="icone-input clicavel"
+                                    onClick={() => setMostrarConfirmar(!mostrarConfirmar)}
+                                />
+                            )}
+                        </div>
+
+                        <div className="grupo-input">
+                            <select
+                                className="select-role"
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                required
                             >
-                                {mostrarConfirmar ? (
-                                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22" />
-                                ) : (
-                                    <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></>
-                                )}
-                            </svg>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+
+                            <ShieldPlus className="icone-input" />
                         </div>
 
                         <button type="submit" className="btn-cadastrar-form">

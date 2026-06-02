@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Search, X } from "lucide-react";
 import "./css/filmes.css";
 
 export default function Filmes() {
@@ -16,7 +17,6 @@ export default function Filmes() {
   useEffect(() => {
     const buscarDados = async () => {
       try {
-        // Atualizado para as novas rotas do FastAPI
         const [respFilmes, respCategorias] = await Promise.all([
           fetch("http://localhost:8000/filmes"),
           fetch("http://localhost:8000/dados/categorias")
@@ -25,7 +25,6 @@ export default function Filmes() {
         if (respFilmes.ok) {
           const dadosFilmes = await respFilmes.json();
          
-          // Filtra para mostrar apenas os aprovados
           const aprovados = dadosFilmes.filter(f => f.flag === 1 || f.flag === true);
           setFilmes(aprovados);
           setFilmesFiltrados(aprovados);
@@ -140,10 +139,7 @@ export default function Filmes() {
 
         <div className="barra-filtros">
           <div className="campo-pesquisa">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
+            <Search size={18} color="#888" />
             <input 
               type="text" 
               placeholder="Buscar por título..." 
@@ -168,10 +164,7 @@ export default function Filmes() {
             </select>
 
             <button className="btn-limpar-filtros" onClick={limparFiltros}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e03c2f" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
+              <X size={16} color="#e03c2f" />
             </button>
           </div>
         </div>

@@ -28,7 +28,7 @@ def register(body: UsuarioCreate, db: Session = Depends(get_db)):
         senha=hash_password(body.senha),
         data_nascimento=body.data_nascimento,
         imagem=body.imagem,
-        role="user",
+        role=body.role,
     )
     db.add(user)
     db.commit()

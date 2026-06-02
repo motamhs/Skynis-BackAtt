@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Check, Clock, Film, Pencil, Trash2, X } from "lucide-react";
 import "./css/pageadm.css";
 
 export default function Admin() {
@@ -24,17 +25,40 @@ export default function Admin() {
 
   const token = localStorage.getItem("access_token");
 
+  const getIdFilme = (filme) => filme.id || filme.id_filme;
+
+  const usuarioEhAdmin = useCallback(() => {
+    if (!token) return false;
+
+    try {
+      const payloadBase64 = token.split(".")[1];
+      const payloadJson = JSON.parse(
+        atob(payloadBase64.replace(/-/g, "+").replace(/_/g, "/"))
+      );
+
+      return payloadJson.role === "admin";
+    } catch (erro) {
+      console.error("Erro ao ler token de admin:", erro);
+      return false;
+    }
+  }, [token]);
+
   useEffect(() => {
     if (!token) {
       navigate("/login");
       return;
     }
 
+    if (!usuarioEhAdmin()) {
+      navigate("/");
+      return;
+    }
+
     const buscarDadosAdmin = async () => {
       try {
         const [respFilmes, respPendentes] = await Promise.all([
-          fetch("http://localhost:8000/listagem"),
-          fetch("http://localhost:8000/filmes-pendentes", {
+          fetch("http://localhost:8000/filmes"),
+          fetch("http://localhost:8000/filmes/pendentes", {
             headers: { "Authorization": `Bearer ${token}` }
           })
         ]);
@@ -48,7 +72,7 @@ export default function Admin() {
         if (respPendentes.ok) {
           const dadosPendentes = await respPendentes.json();
           setPendentes(dadosPendentes);
-        } else {
+        } else if (respPendentes.status === 401 || respPendentes.status === 403) {
    
           navigate("/");
         }
@@ -60,20 +84,20 @@ export default function Admin() {
     };
 
     buscarDadosAdmin();
-  }, [token, navigate]);
+  }, [token, navigate, usuarioEhAdmin]);
 
 
   const handleAprovarFilme = async (idFilme) => {
     try {
-      const resp = await fetch(`http://localhost:8000/aprovafilme?id=${idFilme}`, {
+      const resp = await fetch(`http://localhost:8000/filmes/${idFilme}/aprovar`, {
         method: "PUT",
         headers: { "Authorization": `Bearer ${token}` }
       });
 
       if (resp.ok) {
    
-        const filmeAprovado = pendentes.find(f => f.id === idFilme);
-        setPendentes(pendentes.filter(f => f.id !== idFilme));
+        const filmeAprovado = pendentes.find(f => getIdFilme(f) === idFilme);
+        setPendentes(pendentes.filter(f => getIdFilme(f) !== idFilme));
         if (filmeAprovado) {
           setFilmes([...filmes, { ...filmeAprovado, flag: 1 }]);
         }
@@ -92,16 +116,16 @@ export default function Admin() {
     if (!confirmar) return;
 
     try {
-      const resp = await fetch(`http://localhost:8000/filme?id=${idFilme}`, {
+      const resp = await fetch(`http://localhost:8000/filmes/${idFilme}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });
 
       if (resp.ok) {
         if (isPendente) {
-          setPendentes(pendentes.filter(f => f.id !== idFilme));
+          setPendentes(pendentes.filter(f => getIdFilme(f) !== idFilme));
         } else {
-          setFilmes(filmes.filter(f => f.id !== idFilme));
+          setFilmes(filmes.filter(f => getIdFilme(f) !== idFilme));
         }
       } else {
         alert("Erro ao excluir filme.");
@@ -121,37 +145,48 @@ export default function Admin() {
   
         <div className="admin-resumo-grid">
           <div className="admin-card-resumo">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e03c2f" strokeWidth="2">
-              <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
-              <line x1="7" y1="2" x2="7" y2="22"></line>
-              <line x1="17" y1="2" x2="17" y2="22"></line>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <line x1="2" y1="7" x2="7" y2="7"></line>
-              <line x1="2" y1="17" x2="7" y2="17"></line>
-              <line x1="17" y1="17" x2="22" y2="17"></line>
-              <line x1="17" y1="7" x2="22" y2="7"></line>
-            </svg>
+            <Film size={32} color="#e03c2f" />
             <h2>{filmes.length}</h2>
             <p>Total de Filmes</p>
           </div>
           
           <div className="admin-card-resumo">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#eab308" strokeWidth="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
+            <Clock size={32} color="#eab308" />
             <h2>{pendentes.length}</h2>
             <p>Filmes Pendentes</p>
           </div>
 
           <div className="admin-card-resumo">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2">
-              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
-              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
+            <Pencil size={32} color="#3b82f6" />
             <h2>{edicoesPendentes.length}</h2>
             <p>Edições Pendentes</p>
           </div>
+        </div>
+
+
+        <h2 className="admin-titulo-secao">Filmes Pendentes</h2>
+        <div className="admin-lista-vertical">
+          {pendentes.length === 0 ? <p className="admin-vazio">Nenhum filme pendente.</p> : null}
+
+          {pendentes.map(filme => (
+            <div key={`pendente-${getIdFilme(filme)}`} className="admin-item-lista">
+              <div className="admin-item-info">
+                <img src={filme.imagem || filme.poster} alt={filme.titulo} className="admin-item-poster" />
+                <div className="admin-textos">
+                  <h3>{filme.titulo}</h3>
+                  <p>{filme.ano} • ID: {getIdFilme(filme)}</p>
+                </div>
+              </div>
+              <div className="admin-item-acoes">
+                <button className="btn-aprovar" onClick={() => handleAprovarFilme(getIdFilme(filme))} title="Aprovar Filme">
+                  <Check size={20} strokeWidth={3} />
+                </button>
+                <button className="btn-deletar" onClick={() => handleDeletarFilme(getIdFilme(filme), true)} title="Excluir Filme">
+                  <Trash2 size={20} color="#e03c2f" />
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
 
 
@@ -174,10 +209,10 @@ export default function Admin() {
               </div>
               <div className="admin-item-acoes">
                 <button className="btn-aprovar" onClick={() => alert("Edição Aprovada! (Mock)")}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <Check size={20} strokeWidth={3} />
                 </button>
                 <button className="btn-rejeitar" onClick={() => setEdicoesPendentes([])}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <X size={20} strokeWidth={3} />
                 </button>
               </div>
             </div>
@@ -190,20 +225,17 @@ export default function Admin() {
           {filmes.length === 0 ? <p className="admin-vazio">Nenhum filme catalogado.</p> : null}
 
           {filmes.map(filme => (
-            <div key={`all-${filme.id}`} className="admin-item-lista">
+            <div key={`all-${getIdFilme(filme)}`} className="admin-item-lista">
               <div className="admin-item-info">
                 <img src={filme.imagem || filme.poster} alt={filme.titulo} className="admin-item-poster" />
                 <div className="admin-textos">
                   <h3>{filme.titulo}</h3>
-                  <p>{filme.ano} • ID: {filme.id}</p>
+                  <p>{filme.ano} • ID: {getIdFilme(filme)}</p>
                 </div>
               </div>
               <div className="admin-item-acoes">
-                <button className="btn-deletar" onClick={() => handleDeletarFilme(filme.id, false)} title="Excluir Filme">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#e03c2f" strokeWidth="2">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                  </svg>
+                <button className="btn-deletar" onClick={() => handleDeletarFilme(getIdFilme(filme), false)} title="Excluir Filme">
+                  <Trash2 size={20} color="#e03c2f" />
                 </button>
               </div>
             </div>

@@ -116,7 +116,7 @@ def get_filme(filme_id: int, db: Session = Depends(get_db)):
 def create_filme(
     body: FilmeCreate,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(get_current_user),
+    current_user: Usuario = Depends(get_current_user),
 ):
     data = body.model_dump()
     filme = Filme(
@@ -129,7 +129,7 @@ def create_filme(
         poster=data.get("poster"),
         banner=data.get("banner"),
         trailer=data.get("trailer"),
-        flag=False,  # aguarda aprovação do admin
+        flag=current_user.role == "admin",
     )
     db.add(filme)
     db.flush()  # obtém id_filme antes do commit

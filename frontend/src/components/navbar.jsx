@@ -1,28 +1,32 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Film, Home, LogIn, LogOut, Shield, User } from "lucide-react";
 import "./css/navbar.css";
 
 import LogoSkynis from "../assets/logo Skynis.svg?react";
-import IconInicio from "../assets/home icon.svg?react";
-import IconFilme from "../assets/filmes icon.svg?react";
-import IconPerfil from "../assets/perfil icon.svg?react";
-import IconAdmin from "../assets/admin icon.svg?react";
-import IconSair from "../assets/logout icon.svg?react";
-import IconEntrar from "../assets/entrar icon.svg?react";
 
 const paginas = [
-  { chave: "inicio",  rotulo: "Inicio",  icone: <IconInicio />, roles: [null, "usuario", "admin"] },
-  { chave: "filmes",  rotulo: "Filmes",  icone: <IconFilme />,  roles: [null, "usuario", "admin"] },
-  { chave: "perfil",  rotulo: "Perfil",  icone: <IconPerfil />, roles: ["usuario", "admin"] },
-  { chave: "admin",   rotulo: "Admin",   icone: <IconAdmin />,  roles: ["admin"] },
+  { chave: "inicio",  rotulo: "Inicio",  icone: <Home />, roles: [null, "usuario", "admin"] },
+  { chave: "filmes",  rotulo: "Filmes",  icone: <Film />,  roles: [null, "usuario", "admin"] },
+  { chave: "perfil",  rotulo: "Perfil",  icone: <User />, roles: ["usuario", "admin"] },
+  { chave: "admin",   rotulo: "Admin",   icone: <Shield />,  roles: ["admin"] },
 ];
 
-export default function Navbar({ role = null, paginaAtiva = null, aoNavegar, aoSair }) {
-  const [ativa, setAtiva] = useState(paginaAtiva);
+export default function Navbar({ role = null, aoNavegar, aoSair }) {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const obterPaginaAtiva = () => {
+    if (pathname === "/") return "inicio";
+    if (pathname.startsWith("/filmes") || pathname.startsWith("/filme/")) return "filmes";
+    if (pathname.startsWith("/perfil")) return "perfil";
+    if (pathname.startsWith("/admin")) return "admin";
+    if (pathname.startsWith("/adicionar")) return "adicionar";
+    return null;
+  };
+
+  const ativa = obterPaginaAtiva();
 
   const navegar = (chave) => {
-    setAtiva(chave);
     aoNavegar?.(chave);
     
     if (chave === "inicio") {
@@ -57,20 +61,20 @@ export default function Navbar({ role = null, paginaAtiva = null, aoNavegar, aoS
       <div className="acoes">
         {role === null && (
           <button className="botao botao-entrar" onClick={() => navigate("/login")}>
-            <IconEntrar />
+            <LogIn />
             Login
           </button>
         )}
 
         {role === "admin" && (
-          <button className="botao botao-adicionar" onClick={() => navegar("adicionar")}>
+          <button className={`botao botao-adicionar${ativa === "adicionar" ? " ativo" : ""}`} onClick={() => navegar("adicionar")}>
             + Adicionar
           </button>
         )}
 
         {role !== null && (
           <button className="botao botao-sair" onClick={aoSair}>
-            <IconSair />
+            <LogOut />
             Sair
           </button>
         )}

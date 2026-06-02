@@ -133,6 +133,7 @@ class UsuarioCreate(BaseModel):
     apelido: Optional[str] = None
     email: EmailStr
     senha: str
+    role: str = "user"
     data_nascimento: Optional[date] = None
     imagem: Optional[str] = None
 
@@ -141,6 +142,13 @@ class UsuarioCreate(BaseModel):
     def senha_minima(cls, v: str) -> str:
         if len(v) < 6:
             raise ValueError("Senha deve ter ao menos 6 caracteres")
+        return v
+
+    @field_validator("role")
+    @classmethod
+    def role_valida(cls, v: str) -> str:
+        if v not in ("admin", "user"):
+            raise ValueError("role deve ser 'admin' ou 'user'")
         return v
 
 class UsuarioUpdate(BaseModel):
