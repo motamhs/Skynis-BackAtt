@@ -1,0 +1,169 @@
+.pagina-admin {
+  background-color: #0f0f0f;
+  min-height: 100vh;
+  color: #ffffff;
+  font-family: sans-serif;
+  padding: 40px 20px 80px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.admin-loading {
+  text-align: center;
+  padding: 100px;
+  color: #888;
+  font-size: 1.2rem;
+}
+
+
+.admin-resumo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.admin-card-resumo {
+  background-color: #111111;
+  border: 1px solid #1a1a1a;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.admin-card-resumo h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 12px 0 4px 0;
+}
+
+.admin-card-resumo p {
+  color: #888888;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+
+.admin-lista-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-vazio {
+  color: #666;
+  font-style: italic;
+}
+
+.admin-item-lista {
+  background-color: #111111;
+  border-radius: 12px;
+  padding: 12px 20px 12px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #1a1a1a;
+}
+
+.admin-item-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-item-poster {
+  width: 60px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.admin-textos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-textos h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.admin-textos p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888888;
+}
+
+.admin-subtexto span {
+  color: #cccccc;
+}
+
+.admin-comparacao {
+  margin-top: 4px !important;
+}
+
+.valor-antigo {
+  text-decoration: line-through;
+  color: #666666;
+}
+
+.valor-novo {
+  color: #e03c2f;
+  font-weight: 600;
+}
+
+
+.admin-item-acoes {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-aprovar, .btn-rejeitar, .btn-deletar {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.2s;
+  color: #ffffff;
+}
+
+.btn-aprovar {
+  background-color: #28a745; 
+}
+
+.btn-rejeitar {
+  background-color: #e03c2f; 
+}
+
+.btn-deletar {
+  background-color: transparent;
+  border: 1px solid #333333;
+}
+
+.btn-aprovar:hover, .btn-rejeitar:hover {
+  opacity: 0.8;
+}
+
+.btn-deletar:hover {
+  background-color: #1a1a1a;
+  border-color: #555555;
+}
+
+

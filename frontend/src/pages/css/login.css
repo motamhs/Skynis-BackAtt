@@ -1,0 +1,178 @@
+
+.pagina-login {
+  min-height: 100vh;
+  background-color: #0f0f0f;
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+}
+
+
+.header-login {
+  padding: 24px 32px;
+}
+
+.header-login .logo-svg {
+  height: 24px;
+  width: auto;
+  cursor: pointer;
+}
+
+
+.container-login {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card-login {
+  background-color: #000000;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card-login h1 {
+  color: #ffffff;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.form-login {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grupo-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.grupo-input input {
+  width: 100%;
+  background-color: #1f1f1f;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 14px 44px 14px 16px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.grupo-input input::placeholder {
+  color: #666666;
+}
+
+.grupo-input input:focus {
+  border-color: #e03c2f;
+}
+
+.icone-input {
+  position: absolute;
+  right: 14px;
+  width: 18px;
+  height: 18px;
+  color: #666666;
+}
+
+.icone-input.clicavel {
+  cursor: pointer;
+}
+
+.icone-input.clicavel:hover {
+  color: #ffffff;
+}
+
+.btn-entrar-form {
+  background-color: #e03c2f;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.btn-entrar-form:hover {
+  background-color: #c7352a;
+}
+
+.divisor {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #555555;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.divisor::before,
+.divisor::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.divisor span {
+  padding: 0 10px;
+}
+
+/* Botões Google e ADM */
+.botoes-alternativos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-alternativo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #111111;
+  color: #e8e8e8;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-alternativo:hover {
+  background-color: #1a1a1a;
+  border-color: #333333;
+}
+
+    
+.link-cadastro {
+  text-align: center;
+  color: #888888;
+  font-size: 0.85rem;
+  margin-top: 8px;
+}
+
+.link-cadastro a {
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link-cadastro a:hover {
+  text-decoration: underline;
+}
